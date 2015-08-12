@@ -6,6 +6,12 @@ import (
 	"log"
 )
 
+//
+// KernelMetrics:
+//     maxfiles
+//     maxproc
+//	   allocated (files)
+//
 func KernelMetrics() (L []*model.MetricValue) {
 
 	maxFiles, err := nux.KernelMaxFiles()

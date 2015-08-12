@@ -31,6 +31,8 @@ func configPluginRoutes() {
 			}
 		} else {
 			// git clone
+			// 这个如何处理?
+			// git pull?
 			cmd := exec.Command("git", "clone", g.Config().Plugin.Git, file.Basename(dir))
 			cmd.Dir = parentDir
 			err := cmd.Run()

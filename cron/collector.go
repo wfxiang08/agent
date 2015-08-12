@@ -25,6 +25,7 @@ func Collect() {
 		return
 	}
 
+	// 不同的指标分批次collect?
 	for _, v := range funcs.Mappers {
 		go collect(int64(v.Interval), v.Fs)
 	}
@@ -45,6 +46,7 @@ func collect(sec int64, fns []func() []*model.MetricValue) {
 		ignoreMetrics := g.Config().IgnoreMetrics
 
 		for _, fn := range fns {
+			// 获取不同的Metrics
 			items := fn()
 			if items == nil {
 				continue
@@ -54,6 +56,7 @@ func collect(sec int64, fns []func() []*model.MetricValue) {
 				continue
 			}
 
+			// 如果Metric需要，则保留
 			for _, mv := range items {
 				if b, ok := ignoreMetrics[mv.Metric]; ok && b {
 					continue
@@ -63,6 +66,7 @@ func collect(sec int64, fns []func() []*model.MetricValue) {
 			}
 		}
 
+		// 采样的step, 在什么地方指定?
 		now := time.Now().Unix()
 		for j := 0; j < len(mvs); j++ {
 			mvs[j].Step = sec
@@ -70,6 +74,7 @@ func collect(sec int64, fns []func() []*model.MetricValue) {
 			mvs[j].Timestamp = now
 		}
 
+		// 发送到Transfer服务器
 		g.SendToTransfer(mvs)
 
 	}

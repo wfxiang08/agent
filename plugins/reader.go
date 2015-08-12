@@ -48,6 +48,8 @@ func ListPlugins(relativePath string) map[string]*Plugin {
 		}
 
 		fpath := filepath.Join(relativePath, filename)
+
+		// ModTime比较头疼，但是如果plugin代码不切换分支，还行
 		plugin := &Plugin{FilePath: fpath, MTime: f.ModTime().Unix(), Cycle: cycle}
 		ret[fpath] = plugin
 	}

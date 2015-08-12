@@ -13,6 +13,7 @@ type Dto struct {
 	Data interface{} `json:"data"`
 }
 
+// 在这里配置各种URL的配置
 func init() {
 	configAdminRoutes()
 	configCpuRoutes()
@@ -57,6 +58,7 @@ func AutoRender(w http.ResponseWriter, data interface{}, err error) {
 }
 
 func Start() {
+	// 在init函数中, http.Server都已经配置好了，这里只是绑定到指定的IP/Port中
 	if !g.Config().Http.Enabled {
 		return
 	}

@@ -21,6 +21,8 @@ func UpdateCpuStat() error {
 		return err
 	}
 
+	// 通过固定长度的Buffer来记录: ProcStat的history的状态
+	// 最多记住两个状态: historyCount
 	psLock.Lock()
 	defer psLock.Unlock()
 	for i := historyCount - 1; i > 0; i-- {
@@ -149,6 +151,7 @@ func CpuPrepared() bool {
 	return procStatHistory[1] != nil
 }
 
+// 定义各种CPU Metrics
 func CpuMetrics() []*model.MetricValue {
 	if !CpuPrepared() {
 		return []*model.MetricValue{}

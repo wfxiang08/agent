@@ -31,8 +31,10 @@ func (this *PluginScheduler) Schedule() {
 		for {
 			select {
 			case <-this.Ticker.C:
+				// 定时Run Plugin
 				PluginRun(this.Plugin)
 			case <-this.Quit:
+				// 退出，或者close
 				this.Ticker.Stop()
 				return
 			}
@@ -59,6 +61,7 @@ func PluginRun(plugin *Plugin) {
 		log.Println(fpath, "running...")
 	}
 
+	// 执行Command
 	cmd := exec.Command(fpath)
 	var stdout bytes.Buffer
 	cmd.Stdout = &stdout

@@ -7,6 +7,7 @@ import (
 	"log"
 )
 
+// 获取磁盘信息: /proc/mounts
 func DeviceMetrics() (L []*model.MetricValue) {
 	mountPoints, err := nux.ListMountPoint()
 

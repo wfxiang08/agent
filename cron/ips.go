@@ -21,6 +21,7 @@ func syncTrustableIps() {
 	REST:
 		time.Sleep(duration)
 
+		// Trustable Ips做什么事情的呢?
 		var ips string
 		err := g.HbsClient.Call("Agent.TrustableIps", model.NullRpcRequest{}, &ips)
 		if err != nil {

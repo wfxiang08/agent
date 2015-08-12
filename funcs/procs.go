@@ -38,7 +38,14 @@ func ProcMetrics() (L []*model.MetricValue) {
 	return
 }
 
+// 两级匹配:
+// Name必须一致，并且Cmdline必须包含val
 func is_a(p *nux.Proc, m map[int]string) bool {
+	// p:
+	//  Pid
+	//  Name 例如: usgi
+	//  CmdLine: usgi-xsdfdsfds
+	//
 	// only one kv pair
 	for key, val := range m {
 		if key == 1 {

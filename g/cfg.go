@@ -63,6 +63,9 @@ func Config() *GlobalConfig {
 	return config
 }
 
+//
+// 读取当前的Hostname, 优先考虑配置中的Hostname
+//
 func Hostname() (string, error) {
 	hostname := Config().Hostname
 	if hostname != "" {
@@ -76,6 +79,9 @@ func Hostname() (string, error) {
 	return hostname, err
 }
 
+//
+// 获取当前机器的IP
+//
 func IP() string {
 	ip := Config().IP
 	if ip != "" {
@@ -83,6 +89,7 @@ func IP() string {
 		return ip
 	}
 
+	// 如果没有指定IP, 则使用本地的LocalIps
 	if len(LocalIps) > 0 {
 		ip = LocalIps[0]
 	}

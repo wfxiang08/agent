@@ -10,11 +10,15 @@ import (
 )
 
 func SyncBuiltinMetrics() {
+	// 通过心跳来获取所需要监控的指标
 	if g.Config().Heartbeat.Enabled && g.Config().Heartbeat.Addr != "" {
 		go syncBuiltinMetrics()
 	}
 }
 
+//
+// 从hbs Server获取当前Agent需要监控的指标；那么本地的Agent又是如何利用去获取这些指标的呢?
+//
 func syncBuiltinMetrics() {
 
 	var timestamp int64 = -1
@@ -41,12 +45,18 @@ func syncBuiltinMetrics() {
 		}
 
 		var resp model.BuiltinMetricResponse
+
+		// 参考: hbs项目中的定义
+		//    Agent#BuiltinMetrics(AgentHeartbeatRequest,BuiltinMetricResponse)
+		// 两个项目通过: open-falcon/common 来定义公共的Model
+		//
 		err = g.HbsClient.Call("Agent.BuiltinMetrics", req, &resp)
 		if err != nil {
 			log.Println("ERROR:", err)
 			goto REST
 		}
 
+		// 如果timestamp和checksum没有改变，则继续等待
 		if resp.Timestamp <= timestamp {
 			goto REST
 		}
@@ -59,12 +69,14 @@ func syncBuiltinMetrics() {
 		checksum = resp.Checksum
 
 		for _, metric := range resp.Metrics {
+			// 读取到 "net.port.listen"
 			if metric.Metric == "net.port.listen" {
 				arr := strings.Split(metric.Tags, "=")
 				if len(arr) != 2 {
 					continue
 				}
 
+				// Parse Port: 64-bit(8-byte长的int)
 				if port, err := strconv.ParseInt(arr[1], 10, 64); err == nil {
 					ports = append(ports, port)
 				} else {
@@ -101,6 +113,7 @@ func syncBuiltinMetrics() {
 			}
 		}
 
+		// 更新package g中的变量
 		g.SetReportPorts(ports)
 		g.SetReportProcs(procs)
 		g.SetDuPaths(paths)

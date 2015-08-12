@@ -11,6 +11,9 @@ func NetMetrics() []*model.MetricValue {
 	return CoreNetMetrics(g.Config().Collector.IfacePrefix)
 }
 
+//
+// 获取指定"前缀"的网卡的信息
+//
 func CoreNetMetrics(ifacePrefix []string) []*model.MetricValue {
 
 	netIfs, err := nux.NetIfs(ifacePrefix)

@@ -14,6 +14,9 @@ var (
 	dsLock       = new(sync.RWMutex)
 )
 
+//
+// 磁盘统计: 主要是io相关的，而dfstat主要是容量、使用量相关的
+//
 func UpdateDiskStats() error {
 	dsList, err := nux.ListDiskStats()
 	if err != nil {

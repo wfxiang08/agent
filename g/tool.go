@@ -28,5 +28,7 @@ func GetCurrPluginVersion() string {
 		return fmt.Sprintf("Error:%s", err.Error())
 	}
 
+	// 如何管理Plugin呢?
+	// 所有的Plugin放在指定的git目录中，然后通过Git的版本号来管理
 	return strings.TrimSpace(out.String())
 }

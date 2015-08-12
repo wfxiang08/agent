@@ -6,6 +6,9 @@ import (
 	"github.com/toolkits/sys"
 )
 
+// 检查各种 Collector是否正常工作？
+// 输出结果: fmt.Println 到控制台
+//
 func CheckCollector() {
 
 	output := make(map[string]bool)

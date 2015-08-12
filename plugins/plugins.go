@@ -14,7 +14,9 @@ var (
 func DelNoUsePlugins(newPlugins map[string]*Plugin) {
 	for currKey, currPlugin := range Plugins {
 		newPlugin, ok := newPlugins[currKey]
+		// 新的plugins不包含旧的plugin, 或者修改时间变化了
 		if !ok || currPlugin.MTime != newPlugin.MTime {
+			// 删除Plugins中的元素，不会导致iterator失效?
 			deletePlugin(currKey)
 		}
 	}
@@ -26,6 +28,7 @@ func AddNewPlugins(newPlugins map[string]*Plugin) {
 			continue
 		}
 
+		// Plugin/Schedule
 		Plugins[fpath] = newPlugin
 		sch := NewPluginScheduler(newPlugin)
 		PluginsWithScheduler[fpath] = sch

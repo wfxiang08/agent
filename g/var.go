@@ -11,6 +11,10 @@ import (
 	"time"
 )
 
+//
+// 定义了Agent的各种参数: Root, LocalIps, HbsClient, TransferClient
+// 以及要监控的各种指标: reportPaths, duPaths, reportProcs等，这些通过心跳信号来获取
+//
 var Root string
 
 func InitRootDir() {
@@ -23,6 +27,7 @@ func InitRootDir() {
 
 var LocalIps []string
 
+// 获取所有的Local Ips
 func InitLocalIps() {
 	var err error
 	LocalIps, err = net.IntranetIP()
@@ -36,6 +41,7 @@ var (
 	TransferClient *SingleConnRpcClient
 )
 
+// 心跳Client& 数据传输Client
 func InitRpcClients() {
 	if Config().Heartbeat.Enabled {
 		HbsClient = &SingleConnRpcClient{
@@ -141,8 +147,10 @@ func TrustableIps() []string {
 
 func SetTrustableIps(ipStr string) {
 	arr := strings.Split(ipStr, ",")
+
 	ipsLock.Lock()
 	defer ipsLock.Unlock()
+
 	ips = arr
 }
 

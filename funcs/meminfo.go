@@ -6,6 +6,7 @@ import (
 	"log"
 )
 
+// 内存监控
 func MemMetrics() []*model.MetricValue {
 	m, err := nux.MemInfo()
 	if err != nil {

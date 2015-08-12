@@ -17,12 +17,16 @@ func PortMetrics() (L []*model.MetricValue) {
 		return
 	}
 
+	// 获取所有的tcp监听端口: ss -t -l -n
+	// ss --help 查看细节
+	//
 	allListeningPorts, err := nux.ListeningPorts()
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
+	// 查看指定端口的状态
 	for i := 0; i < sz; i++ {
 		tags := fmt.Sprintf("port=%d", reportPorts[i])
 		if slice.ContainsInt64(allListeningPorts, reportPorts[i]) {

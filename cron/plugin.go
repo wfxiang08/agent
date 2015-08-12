@@ -34,6 +34,7 @@ func syncMinePlugins() {
 
 	duration := time.Duration(g.Config().Heartbeat.Interval) * time.Second
 
+	// 如何同步MinePlugins?
 	for {
 	REST:
 		time.Sleep(duration)

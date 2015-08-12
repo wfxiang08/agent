@@ -11,7 +11,7 @@ import (
 
 type SingleConnRpcClient struct {
 	sync.Mutex
-	rpcClient *rpc.Client
+	rpcClient *rpc.Client // 直接使用Go自带的RPC
 	RpcServer string
 	Timeout   time.Duration
 }
@@ -36,6 +36,7 @@ func (this *SingleConnRpcClient) insureConn() {
 			return
 		}
 
+		// 获取Json Rpc Client
 		this.rpcClient, err = net.JsonRpcClient("tcp", this.RpcServer, this.Timeout)
 		if err == nil {
 			return
@@ -58,16 +59,25 @@ func (this *SingleConnRpcClient) Call(method string, args interface{}, reply int
 	this.Lock()
 	defer this.Unlock()
 
+	// 确保Conn
+	// 如何发现Transfer服务呢?
+	// 采用域名+VIP方式，每个IDC或分区独立处理
+	// Agent + Transfer组合，只能在一个数据中心；不能跨越机房
+	//
+	// GateWay?
 	this.insureConn()
 
 	timeout := time.Duration(50 * time.Second)
 	done := make(chan error)
 
 	go func() {
+		// 所有的参数都
 		err := this.rpcClient.Call(method, args, reply)
 		done <- err
 	}()
 
+	// 等待数据返回
+	// timeout或者出错之后，直接close, 否则可以继续使用当前的Conn
 	select {
 	case <-time.After(timeout):
 		log.Printf("[WARN] rpc call timeout %v => %v", this.rpcClient, this.RpcServer)

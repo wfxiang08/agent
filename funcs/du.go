@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// 统计给定路径的Du,大小为byte
 func DuMetrics() (L []*model.MetricValue) {
 	paths := g.DuPaths()
 	for _, path := range paths {
@@ -29,6 +30,9 @@ func DuMetrics() (L []*model.MetricValue) {
 			continue
 		}
 
+		// 统计结果：
+		// metric, tags, value
+		// Hostname在外部统一添加
 		L = append(L, GaugeValue("du.bs", size, "path="+path))
 	}
 
